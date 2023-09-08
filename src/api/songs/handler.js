@@ -1,50 +1,8 @@
 /* eslint no-underscore-dangle: 0 */
-class OpenMusicHandler {
+class SongHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-  }
-
-  async postAlbumHandler(req, res) {
-    this._validator.validateAlbumPayload(req.payload);
-    const { name = 'untitled', year } = req.payload;
-    const albumId = await this._service.addAlbum({ name, year });
-
-    return res.response({
-      status: 'success',
-      data: { albumId },
-    }).code(201);
-  }
-
-  async getAlbumByIdHandler(req) {
-    const { id } = req.params;
-    const album = await this._service.getAlbumById(id);
-    album.songs = await this._service.getSongAlbumById(id);
-
-    return {
-      status: 'success',
-      data: { album },
-    };
-  }
-
-  async putAlbumByIdHandler(req) {
-    this._validator.validateAlbumPayload(req.payload);
-    const { id } = req.params.id;
-    await this._service.editAlbumById(id, req.payload);
-
-    return {
-      status: 'success',
-      message: 'Album berhasil diperbaharui',
-    };
-  }
-
-  async deleteAlbumByIdHandler(req) {
-    const { id } = req.params;
-    await this._service.deleteAlbumById(id);
-    return {
-      status: 'success',
-      message: 'Album berhasil dihapus',
-    };
   }
 
   async postSongHandler(req, res) {
@@ -68,11 +26,13 @@ class OpenMusicHandler {
     const { title, performer } = req.query;
 
     if (title) {
-      songs = songs.filter((item) => item.title.toLowerCase().includes(title.toLowerCase()));
+      songs = songs.filter((item) => item.title
+        .toLowerCase().includes(title.toLowerCase()));
     }
 
     if (performer) {
-      songs = songs.filter((item) => item.performer.toLowerCase().includes(performer.toLowerCase()));
+      songs = songs.filter((item) => item.performer
+        .toLowerCase().includes(performer.toLowerCase()));
     }
 
     return {
@@ -112,4 +72,4 @@ class OpenMusicHandler {
   }
 }
 
-exports.module = OpenMusicHandler;
+exports.module = SongHandler;
