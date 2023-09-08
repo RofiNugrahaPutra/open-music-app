@@ -1,18 +1,13 @@
 /* eslint no-underscore-dangle: 0 */
 class SongHandler {
-  constructor(service, validator) {
-    this._service = service;
-    this._validator = validator;
+  constructor(songService, songValidator) {
+    this._songService = songService;
+    this._songValidator = songValidator;
   }
 
   async postSongHandler(req, res) {
-    this._validator.validateSongPayload(req.payload);
-    const {
-      title, year, performer, genre, duration, albumId,
-    } = req.payload;
-    const songId = this._service.addSong({
-      title, year, performer, genre, duration, albumId,
-    });
+    this._songValidator.validateSongPayload(req.payload);
+    const songId = await this._songService.addSong(req.payload);
 
     return res.response({
       status: 'success',
@@ -21,7 +16,7 @@ class SongHandler {
   }
 
   async getSongsHandler(req) {
-    let songs = await this._service.getSongs(req.query);
+    let songs = await this._songService.getSongs(req.query);
 
     const { title, performer } = req.query;
 
@@ -43,7 +38,7 @@ class SongHandler {
 
   async getSongByIdHandler(req) {
     const { id } = req.params;
-    const song = await this._service.getSongById(id);
+    const song = await this._songService.getSongById(id);
 
     return {
       status: 'success',
@@ -52,9 +47,9 @@ class SongHandler {
   }
 
   async putSongByIdHandler(req) {
-    this._validator.validateSongPayload(req.payload);
+    this._songValidator.validateSongPayload(req.payload);
     const { id } = req.params;
-    await this._service.editSongById(id, req.payload);
+    await this._songService.editSongById(id, req.payload);
 
     return {
       status: 'success',
@@ -64,7 +59,7 @@ class SongHandler {
 
   async deleteSongByIdHandler(req) {
     const { id } = req.params;
-    await this._service.deleteSongById(id);
+    await this._songService.deleteSongById(id);
     return {
       status: 'success',
       message: 'Lagu berhasil dihapus',

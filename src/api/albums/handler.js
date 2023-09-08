@@ -1,14 +1,14 @@
 /* eslint no-underscore-dangle: 0 */
 class AlbumHandler {
-  constructor(service, validator) {
-    this._service = service;
-    this._validator = validator;
+  constructor(albumService, songService, albumValidator) {
+    this._albumService = albumService;
+    this._songService = songService;
+    this._albumValidator = albumValidator;
   }
 
   async postAlbumHandler(req, res) {
-    this._validator.validateAlbumPayload(req.payload);
-    const { name = 'untitled', year } = req.payload;
-    const albumId = await this._service.addAlbum({ name, year });
+    this._albumValidator.validateAlbumPayload(req.payload);
+    const albumId = await this._albumService.addAlbum(req.payload);
 
     return res.response({
       status: 'success',
@@ -18,8 +18,8 @@ class AlbumHandler {
 
   async getAlbumByIdHandler(req) {
     const { id } = req.params;
-    const album = await this._service.getAlbumById(id);
-    album.songs = await this._service.getSongAlbumById(id);
+    const album = await this._albumService.getAlbumById(id);
+    album.songs = await this._songService.getSongAlbumById(id);
 
     return {
       status: 'success',
@@ -28,9 +28,9 @@ class AlbumHandler {
   }
 
   async putAlbumByIdHandler(req) {
-    this._validator.validateAlbumPayload(req.payload);
-    const { id } = req.params.id;
-    await this._service.editAlbumById(id, req.payload);
+    this._albumValidator.validateAlbumPayload(req.payload);
+    const { id } = req.params;
+    await this._albumService.editAlbumById(id, req.payload);
 
     return {
       status: 'success',
@@ -40,7 +40,7 @@ class AlbumHandler {
 
   async deleteAlbumByIdHandler(req) {
     const { id } = req.params;
-    await this._service.deleteAlbumById(id);
+    await this._albumService.deleteAlbumById(id);
     return {
       status: 'success',
       message: 'Album berhasil dihapus',
