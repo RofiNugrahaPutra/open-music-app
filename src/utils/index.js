@@ -27,4 +27,4 @@ const mapSongModel = ({
   albumId: album_id,
 });
 
-exports.module = { mapAlbumModel, mapSongModel };
+module.exports = { mapAlbumModel, mapSongModel };

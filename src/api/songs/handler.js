@@ -72,4 +72,4 @@ class SongHandler {
   }
 }
 
-exports.module = SongHandler;
+module.exports = SongHandler;

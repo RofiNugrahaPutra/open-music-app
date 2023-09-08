@@ -49,6 +49,17 @@ class SongService {
     return result.rows[0];
   }
 
+  async getSongAlbumById(id) {
+    const query = {
+      text: 'SELECT id, title, performer FROM songs WHERE album_id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
   async editSongById(id, {
     title, year, performer, genre, duration,
   }) {
@@ -78,4 +89,4 @@ class SongService {
   }
 }
 
-exports.module = SongService;
+module.exports = SongService;
