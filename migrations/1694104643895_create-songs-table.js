@@ -24,11 +24,10 @@ exports.up = (pgm) => {
     },
     duration: {
       type: 'INT',
-      notNull: true,
     },
     album_id: {
       type: 'VARCHAR(24)',
-      reference: 'albums(album_id)',
+      reference: 'albums(id)',
     },
   });
 };
