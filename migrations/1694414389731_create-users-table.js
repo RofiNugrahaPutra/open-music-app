@@ -1,22 +1,27 @@
 /* eslint-disable camelcase */
 
 exports.up = (pgm) => {
-  pgm.createTable('albums', {
+  pgm.createTable('users', {
     id: {
       type: 'VARCHAR(32)',
       primaryKey: true,
     },
-    name: {
+    username: {
+      type: 'VARCHAR(48)',
+      unique: true,
+      notNull: true,
+    },
+    password: {
       type: 'VARCHAR(255)',
       notNull: true,
     },
-    year: {
-      type: 'SMALLINT',
+    fullname: {
+      type: 'VARCHAR(255)',
       notNull: true,
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('albums');
+  pgm.dropTable('users');
 };
