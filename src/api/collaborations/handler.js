@@ -1,3 +1,4 @@
+const ClientError = require('../../exceptions/ClientError');
 /* eslint no-underscore-dangle: 0 */
 
 class CollaborationHandler {

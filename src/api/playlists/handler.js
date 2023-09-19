@@ -22,8 +22,8 @@ class PlaylistHandler {
       message: 'Playlist berhasil ditambahkan',
       data: {
         playlistId,
-      }.code(201),
-    });
+      },
+    }).code(201);
   }
 
   async getPlaylistsHandler(req) {
@@ -61,7 +61,7 @@ class PlaylistHandler {
   }
 
   async postSongToPlaylistHandler(req, res) {
-    this.__playlistValidator.validatePostSongToPlaylistPayload(req.payload);
+    this._playlistValidator.validatePostSongToPlaylistPayload(req.payload);
 
     const { playlistId } = req.params;
     const { songId } = req.payload;

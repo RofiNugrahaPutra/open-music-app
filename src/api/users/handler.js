@@ -15,16 +15,6 @@ class UserHandler {
       data: { userId },
     }).code(201);
   }
-
-  // async getUserByIdHandler(req) {
-  //   const { id } = req.params;
-  //   const user = await this._userService.getUserById(id);
-
-  //   return {
-  //     status: 'success',
-  //     data: { user },
-  //   };
-  // }
 }
 
 module.exports = UserHandler;

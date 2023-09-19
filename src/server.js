@@ -107,7 +107,7 @@ const init = async () => {
           authenticationService,
           userService,
           tokenManager: TokenManager,
-          validator: AuthenticationValidator,
+          authenticationValidator: AuthenticationValidator,
         },
       },
       {
@@ -116,7 +116,7 @@ const init = async () => {
           playlistService,
           playlistSongService,
           songService,
-          validator: PlaylistValidator,
+          playlistValidator: PlaylistValidator,
         },
       },
       {
@@ -125,7 +125,7 @@ const init = async () => {
           collaborationService,
           playlistService,
           userService,
-          validator: CollaborationValidator,
+          collaborationValidator: CollaborationValidator,
         },
       },
     ],
