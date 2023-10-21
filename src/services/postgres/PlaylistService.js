@@ -42,14 +42,14 @@ class PlaylistService {
     return result.rows[0].id;
   }
 
-  async getPlaylists(userId) {
+  async getPlaylists(owner) {
     const result = await this._pool.query({
       text: `SELECT playlists.id, playlists.name, users.username
       FROM playlists
       INNER JOIN users ON playlists.owner = users.id
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
       WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
-      values: [userId],
+      values: [owner],
     });
 
     return result.rows;
