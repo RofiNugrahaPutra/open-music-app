@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle: 0 */
+
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
@@ -35,6 +37,11 @@ const PlaylistValidator = require('./validators/playlists');
 const collaborations = require('./api/collaborations');
 const CollaborationService = require('./services/postgres/CollaborationService');
 const CollaborationValidator = require('./validators/collaborations');
+
+/* Exports */
+const _exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportValidator = require('./validators/exports');
 
 const init = async () => {
   const albumService = new AlbumService();
@@ -126,6 +133,15 @@ const init = async () => {
           playlistService,
           userService,
           collaborationValidator: CollaborationValidator,
+        },
+      },
+      {
+        plugin: _exports,
+        options: {
+          exportService: ProducerService,
+          playlistSongService,
+          playlistService,
+          exportValidator: ExportValidator,
         },
       },
     ],
