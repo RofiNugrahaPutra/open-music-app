@@ -18,64 +18,26 @@ class AlbumHandler {
     }).code(201);
   }
 
-  async getAlbumByIdHandler(req, res) {
-    try {
-      const { id } = req.params;
-      const album = await this._albumService.getAlbumById(id);
-      album.songs = await this._songService.getSongAlbumById(id);
+  async getAlbumByIdHandler(req) {
+    const { id } = req.params;
+    const album = await this._albumService.getAlbumById(id);
+    album.songs = await this._songService.getSongAlbumById(id);
 
-      return {
-        status: 'success',
-        data: { album },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = res.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = res.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    return {
+      status: 'success',
+      data: { album },
+    };
   }
 
-  async putAlbumByIdHandler(req, res) {
-    try {
-      this._albumValidator.validateAlbumPayload(req.payload);
-      const { id } = req.params;
-      await this._albumService.editAlbumById(id, req.payload);
+  async putAlbumByIdHandler(req) {
+    this._albumValidator.validateAlbumPayload(req.payload);
+    const { id } = req.params;
+    await this._albumService.editAlbumById(id, req.payload);
 
-      return {
-        status: 'success',
-        message: 'Album berhasil diperbaharui',
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = res.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = res.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    return {
+      status: 'success',
+      message: 'Album berhasil diperbaharui',
+    };
   }
 
   async deleteAlbumByIdHandler(req) {
@@ -84,6 +46,49 @@ class AlbumHandler {
     return {
       status: 'success',
       message: 'Album berhasil dihapus',
+    };
+  }
+
+  async postLikeAlbumByIdHandler(req, res) {
+    const { id: albumId } = req.params;
+    const { id: credentialId } = req.auth.credentials;
+
+    await this._albumService.getAlbumById(albumId);
+
+    const likedAlbumByUser = await this._albumService
+      .getLikedAlbumByUserId(credentialId, albumId);
+
+    if (Number(likedAlbumByUser) > 0) {
+      throw new ClientError('Album sudah masuk dalam daftar suka');
+    }
+
+    await this._albumService.addLikeAlbumById(credentialId, albumId);
+
+    return res.response({
+      status: 'success',
+      message: 'Berhasil menyukai album',
+    }).code(201);
+  }
+
+  async getAllLikedAlbumByIdHandler(req, res) {
+    const { id } = req.params;
+    const { totalLikes, source } = await this._albumService.getAllLikedAlbumById(id);
+
+    return res.response({
+      status: 'success',
+      data: { likes: Number(totalLikes) },
+    }).header('X-Data-Source', source);
+  }
+
+  async deleteLikedAlbumByIdHandler(req) {
+    const { id: albumId } = req.params;
+    const { id: credentialId } = req.auth.credentials;
+
+    await this._albumService.deleteLikedAlbumById(credentialId, albumId);
+
+    return {
+      status: 'success',
+      message: 'Album berhasil dihapus dari daftar suka',
     };
   }
 }
