@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 exports.up = (pgm) => {
   pgm.addColumn('albums', {
-    cover: 'VARCHAR(255)',
+    cover: {
+      type: 'VARCHAR(255)',
+    },
   });
 };
 
