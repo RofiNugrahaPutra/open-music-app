@@ -72,12 +72,18 @@ class AlbumHandler {
 
   async getAllLikedAlbumByIdHandler(req, res) {
     const { id } = req.params;
-    const { totalLikes, source } = await this._albumService.getAllLikedAlbumById(id);
+    const { totalLikes, isCache } = await this._albumService.getAllLikedAlbumById(id);
 
-    return res.response({
+    const response = res.response({
       status: 'success',
       data: { likes: Number(totalLikes) },
-    }).header('X-Data-Source', source);
+    });
+
+    if (isCache) {
+      response.header('X-Data-Source', 'cache');
+    }
+
+    return response;
   }
 
   async deleteLikedAlbumByIdHandler(req) {

@@ -106,7 +106,7 @@ class AlbumService {
       values: [userId, albumId],
     });
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Permintaan gagal. Id tidak ditemukan');
     }
 
@@ -127,7 +127,7 @@ class AlbumService {
       const result = await this._cacheService.get(`album-likes:${id}`);
 
       return {
-        source: 'cache',
+        isCache: true,
         totalLikes: Number(result),
       };
     } catch (error) {
@@ -141,7 +141,6 @@ class AlbumService {
       await this._cacheService.set(`album-likes:${id}`, totalLikes);
 
       return {
-        source: 'database',
         totalLikes,
       };
     }
